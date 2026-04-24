@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <title>Marvel Champions Hero Stats</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --panel: #171b2e;
+      --panel-2: #1f2540;
+      --text: #f5f7ff;
+      --muted: #aab2d5;
+      --border: rgba(255,255,255,0.1);
+      --shadow: 0 12px 32px rgba(0,0,0,0.25);
+
+      --blue: #2d9cff;
+      --red: #ff5b6e;
+      --green: #37c978;
+      --yellow: #f6c945;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #1a2140 0%, #0f1220 48%, #0b0e18 100%);
+      color: var(--text);
+    }
+
+    body {
+      padding: max(16px, env(safe-area-inset-top))
+               max(16px, env(safe-area-inset-right))
+               max(16px, env(safe-area-inset-bottom))
+               max(16px, env(safe-area-inset-left));
+    }
+
+    .app {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .header,
+    .panel {
+      background: rgba(23, 27, 46, 0.88);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      padding: 20px;
+    }
+
+    .header h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.5rem, 2vw + 1rem, 2.2rem);
+      line-height: 1.1;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.6fr 0.9fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .stats {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stat-card {
+      border-radius: 18px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      font-size: 1.05rem;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      box-shadow: 0 0 14px rgba(255,255,255,0.16);
+      flex: 0 0 14px;
+    }
+
+    .lock-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-width: 54px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .lock-btn:active,
+    .step-btn:active,
+    .action-btn:active {
+      transform: scale(0.98);
+    }
+
+    .lock-btn.locked {
+      border-color: rgba(255,255,255,0.22);
+      background: #2d355a;
+    }
+
+    .stat-controls {
+      display: grid;
+      grid-template-columns: 52px minmax(80px, 1fr) 52px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .step-btn {
+      border: none;
+      border-radius: 14px;
+      height: 52px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      background: var(--accent);
+      box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    .value-input {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #0f1430;
+      color: var(--text);
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      outline: none;
+      padding: 0 10px;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    .value-input::-webkit-outer-spin-button,
+    .value-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .side-panel {
+      display: grid;
+      gap: 14px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .actions {
+      display: grid;
+      gap: 12px;
+    }
+
+    .action-btn {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .action-btn.save {
+      background: linear-gradient(135deg, #4f7cff, #6d5cff);
+    }
+
+    .action-btn.reset {
+      background: linear-gradient(135deg, #ff8a5b, #ff5b6e);
+    }
+
+    .defaults-box {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .defaults-box h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .defaults-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+    }
+
+    .defaults-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .status {
+      min-height: 22px;
+      color: #d7e2ff;
+      font-size: 0.92rem;
+    }
+
+    .legend {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 860px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .panel,
+      .header {
+        padding: 14px;
+        border-radius: 18px;
+      }
+
+      .stat-card {
+        padding: 12px;
+      }
+
+      .stat-top {
+        align-items: flex-start;
+      }
+
+      .meta {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stat-controls {
+        grid-template-columns: 48px minmax(72px, 1fr) 48px;
+      }
+
+      .step-btn,
+      .value-input {
+        height: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="header">
+      <h1>Marvel Champions Hero Stats</h1>
+      <p>
+        Set your current hero values, save them as new defaults, and reset only the
+        stats that are unlocked.
+      </p>
+    </section>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="stats" id="statsContainer"></div>
+      </section>
+
+      <aside class="side-panel">
+        <section class="panel actions">
+          <button class="action-btn save" id="saveBtn">Save Defaults</button>
+          <button class="action-btn reset" id="resetBtn">Reset Unlocked</button>
+          <div class="status" id="statusText"></div>
+        </section>
+
+        <section class="panel defaults-box">
+          <h2>Saved Defaults</h2>
+          <ul class="defaults-list" id="defaultsList"></ul>
+        </section>
+
+        <section class="panel legend">
+          Locked stats keep their current value when you press Reset. Unlocked stats
+          return to the saved defaults.
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "marvel-champions-hero-stats-defaults-v1";
+
+    const statConfig = [
+      { key: "thwart", label: "Thwart", color: "#2d9cff" },
+      { key: "attack", label: "Attack", color: "#ff5b6e" },
+      { key: "defence", label: "Defence", color: "#37c978" },
+      { key: "recovery", label: "Recovery", color: "#f6c945" }
+    ];
+
+    const fallbackDefaults = {
+      thwart: 1,
+      attack: 1,
+      defence: 1,
+      recovery: 1
+    };
+
+    let savedDefaults = loadDefaults();
+    let currentValues = { ...savedDefaults };
+    let locks = {
+      thwart: false,
+      attack: false,
+      defence: false,
+      recovery: false
+    };
+
+    const statsContainer = document.getElementById("statsContainer");
+    const defaultsList = document.getElementById("defaultsList");
+    const saveBtn = document.getElementById("saveBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const statusText = document.getElementById("statusText");
+
+    function loadDefaults() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...fallbackDefaults };
+
+        const parsed = JSON.parse(raw);
+        return {
+          thwart: sanitizeNumber(parsed.thwart),
+          attack: sanitizeNumber(parsed.attack),
+          defence: sanitizeNumber(parsed.defence),
+          recovery: sanitizeNumber(parsed.recovery)
+        };
+      } catch {
+        return { ...fallbackDefaults };
+      }
+    }
+
+    function sanitizeNumber(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) return 1;
+      return Math.max(0, Math.round(num));
+    }
+
+    function saveDefaults() {
+      savedDefaults = {
+        thwart: sanitizeNumber(getInputValue("thwart")),
+        attack: sanitizeNumber(getInputValue("attack")),
+        defence: sanitizeNumber(getInputValue("defence")),
+        recovery: sanitizeNumber(getInputValue("recovery"))
+      };
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedDefaults));
+      currentValues = { ...savedDefaults };
+      syncInputs();
+      renderDefaults();
+      setStatus("Defaults saved.");
+    }
+
+    function resetUnlocked() {
+      for (const stat of statConfig) {
+        if (!locks[stat.key]) {
+          currentValues[stat.key] = savedDefaults[stat.key];
+        }
+      }
+      syncInputs();
+      setStatus("Unlocked stats reset to saved defaults.");
+    }
+
+    function getInputValue(key) {
+      const input = document.querySelector(`[data-input="${key}"]`);
+      return sanitizeNumber(input.value);
+    }
+
+    function setInputValue(key, value) {
+      const input = document.querySelector(`[data-input="${key}"]`);
+      input.value = sanitizeNumber(value);
+    }
+
+    function changeValue(key, delta) {
+      const next = sanitizeNumber(getInputValue(key) + delta);
+      currentValues[key] = next;
+      setInputValue(key, next);
+    }
+
+    function onManualInput(key, value) {
+      currentValues[key] = sanitizeNumber(value);
+    }
+
+    function toggleLock(key) {
+      locks[key] = !locks[key];
+      renderLockState(key);
+      setStatus(`${labelFor(key)} ${locks[key] ? "locked" : "unlocked"}.`);
+    }
+
+    function labelFor(key) {
+      return statConfig.find(stat => stat.key === key)?.label || key;
+    }
+
+    function renderStats() {
+      statsContainer.innerHTML = "";
+
+      statConfig.forEach(stat => {
+        const card = document.createElement("article");
+        card.className = "stat-card";
+        card.style.setProperty("--accent", stat.color);
+
+        card.innerHTML = `
+          <div class="stat-top">
+            <div class="stat-name">
+              <span class="dot" style="background:${stat.color}"></span>
+              <span>${stat.label}</span>
+            </div>
+            <button
+              class="lock-btn"
+              type="button"
+              data-lock="${stat.key}"
+              aria-pressed="false"
+              aria-label="Unlock ${stat.label}"
+              title="Unlock ${stat.label}"
+            >🔓</button>
+          </div>
+
+          <div class="stat-controls">
+            <button class="step-btn" type="button" data-minus="${stat.key}" aria-label="Decrease ${stat.label}">−</button>
+            <input
+              class="value-input"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              value="${currentValues[stat.key]}"
+              data-input="${stat.key}"
+              aria-label="${stat.label} value"
+            />
+            <button class="step-btn" type="button" data-plus="${stat.key}" aria-label="Increase ${stat.label}">+</button>
+          </div>
+
+          <div class="meta">
+            <span>Saved default: <strong>${savedDefaults[stat.key]}</strong></span>
+            <span>${locks[stat.key] ? "Locked from reset" : "Will reset normally"}</span>
+          </div>
+        `;
+
+        statsContainer.appendChild(card);
+      });
+
+      bindStatEvents();
+    }
+
+    function bindStatEvents() {
+      statConfig.forEach(stat => {
+        const minus = document.querySelector(`[data-minus="${stat.key}"]`);
+        const plus = document.querySelector(`[data-plus="${stat.key}"]`);
+        const input = document.querySelector(`[data-input="${stat.key}"]`);
+        const lock = document.querySelector(`[data-lock="${stat.key}"]`);
+
+        minus.addEventListener("click", () => changeValue(stat.key, -1));
+        plus.addEventListener("click", () => changeValue(stat.key, 1));
+
+        input.addEventListener("input", (e) => {
+          onManualInput(stat.key, e.target.value);
+        });
+
+        input.addEventListener("blur", () => {
+          const cleaned = sanitizeNumber(input.value);
+          currentValues[stat.key] = cleaned;
+          input.value = cleaned;
+        });
+
+        lock.addEventListener("click", () => toggleLock(stat.key));
+
+        renderLockState(stat.key);
+      });
+    }
+
+    function renderLockState(key) {
+      const btn = document.querySelector(`[data-lock="${key}"]`);
+      const metaRow = btn.closest(".stat-card").querySelector(".meta span:last-child");
+
+      if (locks[key]) {
+        btn.textContent = "🔒";
+        btn.classList.add("locked");
+        btn.setAttribute("aria-pressed", "true");
+        btn.setAttribute("aria-label", `Lock enabled for ${labelFor(key)}`);
+        btn.setAttribute("title", `Lock enabled for ${labelFor(key)}`);
+        metaRow.textContent = "Locked from reset";
+      } else {
+        btn.textContent = "🔓";
+        btn.classList.remove("locked");
+        btn.setAttribute("aria-pressed", "false");
+        btn.setAttribute("aria-label", `Unlock ${labelFor(key)}`);
+        btn.setAttribute("title", `Unlock ${labelFor(key)}`);
+        metaRow.textContent = "Will reset normally";
+      }
+    }
+
+    function renderDefaults() {
+      defaultsList.innerHTML = statConfig.map(stat => `
+        <li>
+          <span>${stat.label}</span>
+          <strong>${savedDefaults[stat.key]}</strong>
+        </li>
+      `).join("");
+
+      statConfig.forEach(stat => {
+        const card = document.querySelector(`[data-input="${stat.key}"]`)?.closest(".stat-card");
+        if (card) {
+          const savedNode = card.querySelector(".meta strong");
+          if (savedNode) savedNode.textContent = savedDefaults[stat.key];
+        }
+      });
+    }
+
+    function syncInputs() {
+      statConfig.forEach(stat => setInputValue(stat.key, currentValues[stat.key]));
+    }
+
+    function setStatus(message) {
+      statusText.textContent = message;
+      clearTimeout(setStatus._timer);
+      setStatus._timer = setTimeout(() => {
+        statusText.textContent = "";
+      }, 2200);
+    }
+
+    saveBtn.addEventListener("click", saveDefaults);
+    resetBtn.addEventListener("click", resetUnlocked);
+
+    renderStats();
+    renderDefaults();
+  </script>
+</body>
+</html>
