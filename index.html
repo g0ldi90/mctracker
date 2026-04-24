@@ -60,19 +60,19 @@
     }
 
     .header {
-      padding: 20px;
+      padding: 18px 20px;
     }
 
     .header h1 {
-      margin: 0 0 6px;
-      font-size: clamp(1.5rem, 2vw + 1rem, 2.2rem);
+      margin: 0 0 4px;
+      font-size: clamp(1.35rem, 2vw + 0.9rem, 2.1rem);
       line-height: 1.1;
     }
 
     .header p {
       margin: 0;
       color: var(--muted);
-      font-size: 0.98rem;
+      font-size: 0.95rem;
     }
 
     .layout {
@@ -88,23 +88,23 @@
 
     .stats {
       display: grid;
-      gap: 14px;
+      gap: 12px;
     }
 
     .stat-card {
       border-radius: 18px;
-      padding: 14px;
+      padding: 12px;
       background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
       border: 1px solid var(--border);
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
     .stat-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .stat-name {
@@ -113,15 +113,15 @@
       gap: 10px;
       font-weight: 700;
       letter-spacing: 0.2px;
-      font-size: 1.05rem;
+      font-size: 1.02rem;
     }
 
     .dot {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       box-shadow: 0 0 14px rgba(255,255,255,0.16);
-      flex: 0 0 14px;
+      flex: 0 0 13px;
     }
 
     .lock-btn {
@@ -129,8 +129,9 @@
       background: var(--panel-2);
       color: var(--text);
       border-radius: 12px;
-      padding: 10px 12px;
-      min-width: 54px;
+      width: 48px;
+      height: 44px;
+      min-width: 48px;
       font-size: 1rem;
       cursor: pointer;
       transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
@@ -149,16 +150,16 @@
 
     .stat-controls {
       display: grid;
-      grid-template-columns: 52px minmax(80px, 1fr) 52px;
-      gap: 10px;
+      grid-template-columns: 48px minmax(76px, 1fr) 48px;
+      gap: 8px;
       align-items: center;
     }
 
     .step-btn {
       border: none;
       border-radius: 14px;
-      height: 52px;
-      font-size: 1.4rem;
+      height: 48px;
+      font-size: 1.3rem;
       font-weight: 700;
       cursor: pointer;
       color: white;
@@ -168,13 +169,13 @@
 
     .value-input {
       width: 100%;
-      height: 52px;
+      height: 48px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: #0f1430;
       color: var(--text);
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.12rem;
       font-weight: 700;
       outline: none;
       padding: 0 10px;
@@ -189,12 +190,22 @@
     }
 
     .meta {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
       align-items: center;
-      gap: 12px;
       color: var(--muted);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
+      line-height: 1.2;
+    }
+
+    .meta span {
+      min-width: 0;
+    }
+
+    .meta span:last-child {
+      white-space: nowrap;
+      text-align: right;
     }
 
     .side-panel {
@@ -205,7 +216,8 @@
     }
 
     .actions {
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
 
@@ -257,54 +269,196 @@
     }
 
     .status {
-      min-height: 22px;
+      min-height: 20px;
       color: #d7e2ff;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
     .legend {
       color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.5;
+      font-size: 0.9rem;
+      line-height: 1.45;
     }
 
     @media (max-width: 860px) {
+      body {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 98px);
+      }
+
+      .app {
+        gap: 12px;
+      }
+
       .layout {
         grid-template-columns: 1fr;
+        gap: 12px;
       }
 
       .side-panel {
         position: static;
+        display: block;
+      }
+
+      .actions {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: calc(env(safe-area-inset-bottom) + 10px);
+        width: min(calc(100% - 24px), 980px);
+        z-index: 50;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 18px;
+        background: rgba(23, 27, 46, 0.96);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .status {
+        grid-column: 1 / -1;
+        min-height: 18px;
+        text-align: center;
+        font-size: 0.84rem;
+      }
+
+      .defaults-box,
+      .legend {
+        display: none;
       }
     }
 
     @media (max-width: 520px) {
+      body {
+        padding-top: max(12px, env(safe-area-inset-top));
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+      }
+
       .panel,
       .header {
-        padding: 14px;
-        border-radius: 18px;
+        padding: 12px;
+        border-radius: 16px;
+      }
+
+      .header h1 {
+        font-size: 1.28rem;
+      }
+
+      .header p {
+        font-size: 0.84rem;
+      }
+
+      .stats {
+        gap: 10px;
       }
 
       .stat-card {
-        padding: 12px;
+        padding: 10px;
+        gap: 8px;
+        border-radius: 14px;
       }
 
-      .stat-top {
-        align-items: flex-start;
+      .stat-name {
+        gap: 8px;
+        font-size: 0.96rem;
       }
 
-      .meta {
-        flex-direction: column;
-        align-items: flex-start;
+      .dot {
+        width: 12px;
+        height: 12px;
+        flex-basis: 12px;
+      }
+
+      .lock-btn {
+        width: 42px;
+        height: 40px;
+        min-width: 42px;
+        border-radius: 10px;
+        font-size: 0.95rem;
       }
 
       .stat-controls {
-        grid-template-columns: 48px minmax(72px, 1fr) 48px;
+        grid-template-columns: 42px minmax(64px, 1fr) 42px;
+        gap: 8px;
       }
 
       .step-btn,
       .value-input {
-        height: 48px;
+        height: 42px;
+        border-radius: 12px;
+      }
+
+      .step-btn {
+        font-size: 1.15rem;
+      }
+
+      .value-input {
+        font-size: 1.02rem;
+      }
+
+      .meta {
+        gap: 8px;
+        font-size: 0.78rem;
+      }
+
+      .action-btn {
+        padding: 12px 10px;
+        font-size: 0.95rem;
+        border-radius: 14px;
+      }
+    }
+
+    @media (max-height: 500px) and (orientation: landscape) {
+      body {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 88px);
+      }
+
+      .header {
+        padding: 10px 12px;
+      }
+
+      .header h1 {
+        margin-bottom: 0;
+        font-size: 1.2rem;
+      }
+
+      .header p {
+        display: none;
+      }
+
+      .layout {
+        gap: 10px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .stat-name {
+        font-size: 0.94rem;
+      }
+
+      .meta {
+        font-size: 0.76rem;
+      }
+
+      .actions {
+        width: min(calc(100% - 20px), 980px);
+        bottom: calc(env(safe-area-inset-bottom) + 8px);
+        padding: 10px;
+      }
+
+      .action-btn {
+        padding: 11px 10px;
       }
     }
   </style>
@@ -313,10 +467,7 @@
   <main class="app">
     <section class="header">
       <h1>Marvel Champions Hero Stats</h1>
-      <p>
-        Set your current hero values, save them as new defaults, and reset only the
-        stats that are unlocked.
-      </p>
+      <p>Edit current stats, save defaults, and reset unlocked values.</p>
     </section>
 
     <section class="layout">
@@ -326,8 +477,8 @@
 
       <aside class="side-panel">
         <section class="panel actions">
+          <button class="action-btn reset" id="resetBtn">Reset</button>
           <button class="action-btn save" id="saveBtn">Save Defaults</button>
-          <button class="action-btn reset" id="resetBtn">Reset Unlocked</button>
           <div class="status" id="statusText"></div>
         </section>
 
@@ -411,6 +562,7 @@
       currentValues = { ...savedDefaults };
       syncInputs();
       renderDefaults();
+      renderSavedDefaultsInCards();
       setStatus("Defaults saved.");
     }
 
@@ -421,7 +573,7 @@
         }
       }
       syncInputs();
-      setStatus("Unlocked stats reset to saved defaults.");
+      setStatus("Unlocked stats reset.");
     }
 
     function getInputValue(key) {
@@ -494,8 +646,8 @@
           </div>
 
           <div class="meta">
-            <span>Saved default: <strong>${savedDefaults[stat.key]}</strong></span>
-            <span>${locks[stat.key] ? "Locked from reset" : "Will reset normally"}</span>
+            <span>Default: <strong>${savedDefaults[stat.key]}</strong></span>
+            <span>${locks[stat.key] ? "Locked" : "Resettable"}</span>
           </div>
         `;
 
@@ -541,15 +693,25 @@
         btn.setAttribute("aria-pressed", "true");
         btn.setAttribute("aria-label", `Lock enabled for ${labelFor(key)}`);
         btn.setAttribute("title", `Lock enabled for ${labelFor(key)}`);
-        metaRow.textContent = "Locked from reset";
+        metaRow.textContent = "Locked";
       } else {
         btn.textContent = "🔓";
         btn.classList.remove("locked");
         btn.setAttribute("aria-pressed", "false");
         btn.setAttribute("aria-label", `Unlock ${labelFor(key)}`);
         btn.setAttribute("title", `Unlock ${labelFor(key)}`);
-        metaRow.textContent = "Will reset normally";
+        metaRow.textContent = "Resettable";
       }
+    }
+
+    function renderSavedDefaultsInCards() {
+      statConfig.forEach(stat => {
+        const card = document.querySelector(`[data-input="${stat.key}"]`)?.closest(".stat-card");
+        if (card) {
+          const savedNode = card.querySelector(".meta strong");
+          if (savedNode) savedNode.textContent = savedDefaults[stat.key];
+        }
+      });
     }
 
     function renderDefaults() {
@@ -560,13 +722,7 @@
         </li>
       `).join("");
 
-      statConfig.forEach(stat => {
-        const card = document.querySelector(`[data-input="${stat.key}"]`)?.closest(".stat-card");
-        if (card) {
-          const savedNode = card.querySelector(".meta strong");
-          if (savedNode) savedNode.textContent = savedDefaults[stat.key];
-        }
-      });
+      renderSavedDefaultsInCards();
     }
 
     function syncInputs() {
