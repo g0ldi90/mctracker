@@ -649,7 +649,7 @@
 
           <div class="meta">
             <span>Default: <strong>${savedDefaults[stat.key]}</strong></span>
-            <span>${locks[stat.key] ? "Locked" : "Resettable"}</span>
+            <span>${locks[stat.key] ? "Locked" : "Unlocked"}</span>
           </div>
         `;
 
@@ -702,7 +702,7 @@
         btn.setAttribute("aria-pressed", "false");
         btn.setAttribute("aria-label", `Unlock ${labelFor(key)}`);
         btn.setAttribute("title", `Unlock ${labelFor(key)}`);
-        metaRow.textContent = "Resettable";
+        metaRow.textContent = "Unlocked";
       }
     }
 
