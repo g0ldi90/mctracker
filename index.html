@@ -503,14 +503,14 @@
     const statConfig = [
       { key: "thwart", label: "Thwart", color: "#2d9cff" },
       { key: "attack", label: "Attack", color: "#ff5b6e" },
-      { key: "defence", label: "Defence", color: "#37c978" },
+      { key: "defense", label: "Defense", color: "#37c978" },
       { key: "recovery", label: "Recovery", color: "#f6c945" }
     ];
 
     const fallbackDefaults = {
       thwart: 1,
       attack: 1,
-      defence: 1,
+      defense: 1,
       recovery: 1
     };
 
@@ -519,7 +519,7 @@
     let locks = {
       thwart: false,
       attack: false,
-      defence: false,
+      defense: false,
       recovery: false
     };
 
@@ -538,7 +538,7 @@
         return {
           thwart: sanitizeNumber(parsed.thwart),
           attack: sanitizeNumber(parsed.attack),
-          defence: sanitizeNumber(parsed.defence),
+          defense: sanitizeNumber(parsed.defense),
           recovery: sanitizeNumber(parsed.recovery)
         };
       } catch {
@@ -556,7 +556,7 @@
       savedDefaults = {
         thwart: sanitizeNumber(getInputValue("thwart")),
         attack: sanitizeNumber(getInputValue("attack")),
-        defence: sanitizeNumber(getInputValue("defence")),
+        defense: sanitizeNumber(getInputValue("defense")),
         recovery: sanitizeNumber(getInputValue("recovery"))
       };
 
